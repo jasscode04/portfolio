@@ -14,14 +14,18 @@ define('SITE_DESC',       'Portfolio of Jasprit Singh Sanu featuring AI automati
 // Auto-detect site URL — always points to the portfolio root
 // BASE_PATH is the filesystem path to config.php's directory
 // We compute the web URL relative to htdocs
-$_protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+$_isHttps  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+           || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+           || (!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on')
+           || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+$_protocol = $_isHttps ? 'https' : 'http';
 $_host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
 // Find path of project root relative to document root
 $_docRoot    = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? ''), '/');
 $_scriptDir  = rtrim(str_replace('\\', '/', __DIR__), '/');
 $_webPath    = str_replace($_docRoot, '', $_scriptDir);
 define('SITE_URL', $_protocol . '://' . $_host . $_webPath . '/');
-unset($_protocol, $_host, $_docRoot, $_scriptDir, $_webPath);
+unset($_isHttps, $_protocol, $_host, $_docRoot, $_scriptDir, $_webPath);
 
 define('OWNER_NAME',      'Jasprit Singh Sanu');
 define('OWNER_EMAIL',     'codecpp019@gmail.com');
