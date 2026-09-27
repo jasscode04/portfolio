@@ -1,0 +1,30 @@
+Options -Indexes
+RewriteEngine On
+
+# --- Clean URLs (optional) ---
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^about$          about.php         [L,QSA]
+RewriteRule ^projects$       projects.php      [L,QSA]
+RewriteRule ^automation$     automation.php    [L,QSA]
+RewriteRule ^resume$         resume.php        [L,QSA]
+RewriteRule ^contact$        contact.php       [L,QSA]
+RewriteRule ^project/(.+)$   project.php?slug=$1 [L,QSA]
+
+# --- Security Headers ---
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# --- Protect sensitive files ---
+<FilesMatch "(config\.php|database\.sql|\.env|composer\.json)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# --- PHP error display (set to Off in production) ---
+php_flag display_errors Off
